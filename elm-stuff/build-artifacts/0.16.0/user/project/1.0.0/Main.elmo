@@ -1,0 +1,91 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values) return _elm.Main.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm),
+   $String = Elm.String.make(_elm),
+   $Task = Elm.Task.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var _op = {};
+   var update = F2(function (action,model) {
+      var debug = A2($Debug.log,"was ist hier los",model);
+      var _p0 = action;
+      switch (_p0.ctor)
+      {case "IncrementX": return {ctor: "_Tuple2",_0: _U.update(model,{x: model.x + 1}),_1: $Effects.none};
+         case "DecrementX": return {ctor: "_Tuple2",_0: _U.update(model,{x: model.x - 1}),_1: $Effects.none};
+         case "IncrementY": return {ctor: "_Tuple2",_0: _U.update(model,{y: model.y + 1}),_1: $Effects.none};
+         case "DecrementY": return {ctor: "_Tuple2",_0: _U.update(model,{y: model.y - 1}),_1: $Effects.none};
+         case "ReverseString": return {ctor: "_Tuple2",_0: _U.update(model,{text: $String.reverse(_p0._0)}),_1: $Effects.none};
+         default: return _U.cmp(model.secs,60) > 0 ? {ctor: "_Tuple2",_0: _U.update(model,{secs: 1}),_1: $Effects.none} : {ctor: "_Tuple2"
+                                                                                                                          ,_0: _U.update(model,
+                                                                                                                          {secs: model.secs + 1})
+                                                                                                                          ,_1: $Effects.none};}
+   });
+   var IncreaseSecs = {ctor: "IncreaseSecs"};
+   var ReverseString = function (a) {    return {ctor: "ReverseString",_0: a};};
+   var DecrementY = {ctor: "DecrementY"};
+   var IncrementY = {ctor: "IncrementY"};
+   var DecrementX = {ctor: "DecrementX"};
+   var IncrementX = {ctor: "IncrementX"};
+   var view = F2(function (address,model) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.button,_U.list([A2($Html$Events.onClick,address,IncrementX)]),_U.list([$Html.text("+ X")]))
+              ,A2($Html.button,_U.list([A2($Html$Events.onClick,address,DecrementX)]),_U.list([$Html.text("- X")]))
+              ,A2($Html.button,_U.list([A2($Html$Events.onClick,address,IncrementY)]),_U.list([$Html.text("+ Y")]))
+              ,A2($Html.button,_U.list([A2($Html$Events.onClick,address,DecrementY)]),_U.list([$Html.text("- Y")]))
+              ,A2($Html.div,
+              _U.list([]),
+              _U.list([$Html.text(A2($Basics._op["++"],"X: ",$Basics.toString(model.x)))
+                      ,$Html.text(A2($Basics._op["++"]," ---- Y: ",$Basics.toString(model.y)))]))
+              ,A2($Html.hr,_U.list([]),_U.list([]))
+              ,A2($Html.input,
+              _U.list([$Html$Attributes.placeholder(model.text)
+                      ,$Html$Attributes.type$("text")
+                      ,A3($Html$Events.on,"input",$Html$Events.targetValue,function (str) {    return A2($Signal.message,address,ReverseString(str));})
+                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "display",_1: "block"}]))]),
+              _U.list([]))
+              ,A2($Html.div,_U.list([]),_U.list([$Html.text(A2($Basics._op["++"],"Outcome: ",model.text))]))
+              ,A2($Html.hr,_U.list([]),_U.list([]))
+              ,A2($Html.div,_U.list([]),_U.list([$Html.text("(Minute)-Progressbar: ")]))
+              ,A2($Html.div,
+              _U.list([]),
+              _U.list([A2($Html.progress,
+              _U.list([$Html$Attributes.value($Basics.toString(model.secs)),$Html$Attributes.min("0"),$Html$Attributes.max("60")]),
+              _U.list([]))]))]));
+   });
+   var initialModel = {x: 0,y: 0,text: "Default",secs: 0};
+   var Model = F4(function (a,b,c,d) {    return {x: a,y: b,text: c,secs: d};});
+   var init = {ctor: "_Tuple2",_0: initialModel,_1: $Effects.none};
+   var clock = function (t) {    return IncreaseSecs;};
+   var app = $StartApp.start({init: init,view: view,update: update,inputs: _U.list([A2($Signal.map,clock,$Time.every($Time.second))])});
+   var main = app.html;
+   var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",app.tasks);
+   return _elm.Main.values = {_op: _op
+                             ,app: app
+                             ,main: main
+                             ,clock: clock
+                             ,init: init
+                             ,Model: Model
+                             ,initialModel: initialModel
+                             ,IncrementX: IncrementX
+                             ,DecrementX: DecrementX
+                             ,IncrementY: IncrementY
+                             ,DecrementY: DecrementY
+                             ,ReverseString: ReverseString
+                             ,IncreaseSecs: IncreaseSecs
+                             ,update: update
+                             ,view: view};
+};
